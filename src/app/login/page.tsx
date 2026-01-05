@@ -45,7 +45,7 @@ export default function LoginPage() {
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
           <Briefcase className="h-10 w-10 text-blue-600" />
-          <span className="text-3xl font-bold text-gray-900">TalentHub</span>
+          <span className="text-3xl font-bold text-gray-900">Careera</span>
         </Link>
 
         {/* Login Card */}

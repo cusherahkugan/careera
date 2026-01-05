@@ -6,7 +6,7 @@ import { Providers } from "@/components/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TalentHub - AI-Powered Job Recruitment Platform",
+  title: "Careera - AI-Powered Job Recruitment Platform",
   description: "Connect talented professionals with great opportunities using AI-powered matching and modern recruitment tools.",
   keywords: ["jobs", "recruitment", "hiring", "careers", "AI matching"],
 };

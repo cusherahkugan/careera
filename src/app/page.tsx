@@ -9,7 +9,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Briefcase className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">TalentHub</span>
+            <span className="text-2xl font-bold text-gray-900">Careera</span>
           </Link>
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/jobs" className="text-gray-600 hover:text-gray-900">
@@ -86,7 +86,7 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Why Choose TalentHub?
+            Why Choose Careera?
           </h2>
           <p className="text-xl text-gray-600">
             Advanced features to streamline your job search or recruitment process
@@ -132,7 +132,7 @@ export default function HomePage() {
             Ready to Get Started?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of job seekers and recruiters who trust TalentHub for their career needs.
+            Join thousands of job seekers and recruiters who trust Careera for their career needs.
           </p>
           <Link
             href="/register"
@@ -151,7 +151,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Briefcase className="h-6 w-6" />
-                <span className="text-xl font-bold">TalentHub</span>
+                <span className="text-xl font-bold">Careera</span>
               </div>
               <p className="text-gray-400">
                 AI-powered recruitment platform connecting talent with opportunities.
@@ -183,7 +183,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© 2024 TalentHub. All rights reserved.</p>
+            <p>© 2024 Careera. All rights reserved.</p>
           </div>
         </div>
       </footer>
