@@ -117,6 +117,7 @@ Return match score (0-100) and brief analysis as JSON only.`
     return JSON.parse(content);
   } catch (error) {
     console.error('Job matching error:', error);
+    // Fallback to simple matching
     const matchedSkills = candidateSkills.filter(skill => 
       jobSkills.some(js => js.toLowerCase().includes(skill.toLowerCase()))
     );
