@@ -15,3 +15,155 @@ model User {
   name  String
   email String  @unique
 }
+
+enum UserRole {
+  JOB_SEEKER
+  RECRUITER
+  ADMIN
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  REMOTE
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  INTERVIEW
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  role          UserRole  @default(JOB_SEEKER)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  profile       Profile?
+  company       Company?
+  jobs          Job[]
+  applications  Application[]
+  messages      Message[]
+}
+
+model Profile {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  phone         String?
+  location      String?
+  headline      String?
+  bio           String?
+  resumeUrl     String?
+  
+  skills        String[]
+  experience    Json[]    // [{title, company, duration, description}]
+  education     Json[]    // [{degree, school, year}]
+  
+  linkedIn      String?
+  github        String?
+  portfolio     String?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Company {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name          String
+  logo          String?
+  website       String?
+  industry      String?
+  size          String?
+  description   String?
+  location      String?
+  
+  jobs          Job[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Job {
+  id            String      @id @default(cuid())
+  companyId     String
+  company       Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  recruiterId   String
+  recruiter     User        @relation(fields: [recruiterId], references: [id])
+  
+  title         String
+  description   String
+  requirements  String[]
+  responsibilities String[]
+  
+  type          JobType
+  location      String
+  salary        String?
+  skills        String[]
+  
+  isActive      Boolean     @default(true)
+  views         Int         @default(0)
+  
+  applications  Application[]
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@index([companyId])
+  @@index([recruiterId])
+  @@index([isActive])
+}
+
+model Application {
+  id            String            @id @default(cuid())
+  jobId         String
+  job           Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicantId   String
+  applicant     User              @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  
+  status        ApplicationStatus @default(PENDING)
+  coverLetter   String?
+  resumeUrl     String?
+  
+  aiScore       Float?            // AI matching score 0-100
+  aiNotes       String?           // AI analysis notes
+  
+  messages      Message[]
+  
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  
+  @@unique([jobId, applicantId])
+  @@index([jobId])
+  @@index([applicantId])
+  @@index([status])
+}
+
+model Message {
+  id              String      @id @default(cuid())
+  applicationId   String
+  application     Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  senderId        String
+  sender          User        @relation(fields: [senderId], references: [id])
+  
+  content         String
+  read            Boolean     @default(false)
+  
+  createdAt       DateTime    @default(now())
+  
+  @@index([applicationId])
+  @@index([senderId])
+}
