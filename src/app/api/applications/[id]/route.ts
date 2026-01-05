@@ -3,10 +3,14 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../../auth/[...nextauth]/route'
 import { prisma } from '@/lib/prisma'
 
+interface RouteParams {
+  params: Promise<{ id: string }>
+}
+
 // GET /api/applications/[id] - Get application details
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: RouteParams
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -18,8 +22,10 @@ export async function GET(
       )
     }
 
+    const { id } = await context.params
+
     const application = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         job: {
           include: {
@@ -81,7 +87,7 @@ export async function GET(
 // PATCH /api/applications/[id] - Update application status (recruiter only)
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: RouteParams
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -93,6 +99,7 @@ export async function PATCH(
       )
     }
 
+    const { id } = await context.params
     const body = await req.json()
     const { status } = body
 
@@ -107,7 +114,7 @@ export async function PATCH(
 
     // Check authorization
     const application = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         job: true
       }
@@ -121,7 +128,7 @@ export async function PATCH(
     }
 
     const updatedApplication = await prisma.application.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
       include: {
         job: {

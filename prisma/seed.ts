@@ -16,47 +16,45 @@ async function main() {
 
   console.log('✨ Cleared existing data')
 
-  // Create Job Seeker
-  const jobSeeker = await prisma.user.create({
-    data: {
-      email: 'seeker@example.com',
-      password: await bcrypt.hash('password123', 10),
-      name: 'Alex Johnson',
-      role: 'JOB_SEEKER',
-      profile: {
-        create: {
-          phone: '+1234567890',
-          location: 'San Francisco, CA',
-          headline: 'Full Stack Developer',
-          bio: 'Passionate software engineer with 5 years of experience building scalable web applications. Specialized in React, Node.js, and cloud technologies.',
-          skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'PostgreSQL', 'AWS', 'Docker', 'Git'],
-          experience: [
-            {
-              title: 'Senior Software Engineer',
-              company: 'Tech Corp',
-              duration: '2021 - Present',
-              description: 'Led development of microservices architecture serving 1M+ users. Mentored junior developers and improved deployment pipeline efficiency by 40%.'
-            },
-            {
-              title: 'Software Engineer',
-              company: 'StartupXYZ',
-              duration: '2019 - 2021',
-              description: 'Built customer-facing features using React and Node.js. Implemented real-time notifications system and improved page load times by 50%.'
-            }
-          ],
-          education: [
-            {
-              degree: 'BS Computer Science',
-              school: 'University of California',
-              year: '2019'
-            }
-          ],
-          linkedIn: 'https://linkedin.com/in/alexjohnson',
-          github: 'https://github.com/alexjohnson',
-        }
+ const jobSeeker = await prisma.user.create({
+  data: {
+    email: 'seeker@example.com',
+    password: await bcrypt.hash('password123', 10),
+    name: 'Alex Johnson',
+    role: 'JOB_SEEKER',
+    profile: {
+      create: {
+        phone: '+1234567890',
+        location: 'San Francisco, CA',
+        headline: 'Full Stack Developer',
+        bio: 'Passionate software engineer with 5 years of experience building scalable web applications.',
+        resumeUrl: 'https://example.com/resume.pdf',
+        skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'PostgreSQL', 'AWS', 'Docker', 'Git'],
+        experience: [
+          {
+            title: 'Senior Software Engineer',
+            company: 'Tech Corp',
+            duration: '2021 - Present',
+            description: 'Led development of microservices architecture...'
+          }
+        ],
+        education: [
+          {
+            degree: 'BS Computer Science',
+            school: 'University of California',
+            year: '2019'
+          }
+        ],
+        linkedIn: 'https://linkedin.com/in/alexjohnson',
+        github: 'https://github.com/alexjohnson'
       }
     }
-  })
+  },
+  include: {
+    profile: true
+  }
+})
+
 
   console.log('👤 Created job seeker:', jobSeeker.email)
 
