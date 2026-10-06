@@ -1,41 +1,33 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../../auth/[...nextauth]/route'
-import { parseResume } from '@/lib/ai'
 import { z } from 'zod'
+import { authOptions } from '@/lib/auth'
+import { parseResume } from '@/lib/ai'
 
 const parseResumeSchema = z.object({
   resumeText: z.string().min(100, 'Resume text too short'),
 })
 
-// POST /api/ai/parse-resume - Parse resume text with AI
+// POST /api/ai/parse-resume
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions)
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await req.json()
-    const { resumeText } = parseResumeSchema.parse(body)
-
+    const { resumeText } = parseResumeSchema.parse(await req.json())
     const parsedData = await parseResume(resumeText)
 
     if (!parsedData) {
       return NextResponse.json(
-        { error: 'Failed to parse resume. Make sure OpenAI API key is configured.' },
+        { error: 'Failed to parse resume. Make sure the OpenAI API key is configured.' },
         { status: 500 }
       )
     }
 
-    return NextResponse.json({ 
-      success: true,
-      data: parsedData 
-    })
+    return NextResponse.json({ success: true, data: parsedData })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -43,11 +35,8 @@ export async function POST(req: Request) {
         { status: 400 }
       )
     }
-    
+
     console.error('Resume parsing error:', error)
-    return NextResponse.json(
-      { error: 'Failed to parse resume' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to parse resume' }, { status: 500 })
   }
 }

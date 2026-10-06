@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -23,7 +23,7 @@ export function formatRelativeTime(date: Date | string): string {
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
   if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`
-  
+
   return formatDate(d)
 }
 
@@ -35,7 +35,7 @@ export function formatSalary(salary: string | null | undefined): string {
 export function getInitials(name: string): string {
   return name
     .split(' ')
-    .map(n => n[0])
+    .map((n) => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2)
@@ -47,19 +47,19 @@ export function truncate(str: string, length: number): string {
 }
 
 export const jobTypeColors: Record<string, string> = {
-  FULL_TIME: 'bg-green-100 text-green-800',
-  PART_TIME: 'bg-blue-100 text-blue-800',
-  CONTRACT: 'bg-purple-100 text-purple-800',
-  INTERNSHIP: 'bg-orange-100 text-orange-800',
-  REMOTE: 'bg-indigo-100 text-indigo-800',
+  FULL_TIME: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+  PART_TIME: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
+  CONTRACT: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
+  INTERNSHIP: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
+  REMOTE: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
 }
 
 export const applicationStatusColors: Record<string, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
-  REVIEWED: 'bg-blue-100 text-blue-800',
-  INTERVIEW: 'bg-purple-100 text-purple-800',
-  ACCEPTED: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-red-100 text-red-800',
+  PENDING: 'bg-zinc-500/15 text-zinc-300 border-zinc-500/30',
+  REVIEWED: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
+  INTERVIEW: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
+  ACCEPTED: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+  REJECTED: 'bg-red-500/15 text-red-300 border-red-500/30',
 }
 
 export const applicationStatusLabels: Record<string, string> = {
@@ -71,10 +71,10 @@ export const applicationStatusLabels: Record<string, string> = {
 }
 
 export function getMatchScoreColor(score: number): string {
-  if (score >= 80) return 'text-green-600'
-  if (score >= 60) return 'text-blue-600'
-  if (score >= 40) return 'text-yellow-600'
-  return 'text-red-600'
+  if (score >= 80) return 'text-emerald-400'
+  if (score >= 60) return 'text-blue-400'
+  if (score >= 40) return 'text-yellow-400'
+  return 'text-red-400'
 }
 
 export function getMatchScoreLabel(score: number): string {

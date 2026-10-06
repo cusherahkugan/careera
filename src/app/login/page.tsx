@@ -5,6 +5,10 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Briefcase, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Alert } from '@/components/ui/alert'
+
+const inputCls =
+  'w-full rounded-lg border border-zinc-800 bg-black py-3 pl-10 pr-4 text-white placeholder-zinc-600 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -33,47 +37,42 @@ export default function LoginPage() {
 
       router.push('/dashboard')
       router.refresh()
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.')
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <Link href="/" className="flex items-center justify-center space-x-2 mb-8">
-          <Briefcase className="h-10 w-10 text-blue-600" />
-          <span className="text-3xl font-bold text-gray-900">Careera</span>
+    <div className="flex min-h-screen items-center justify-center bg-black p-4">
+      <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[36rem] -translate-x-1/2 rounded-full bg-blue-600/15 blur-3xl" />
+      <div className="relative w-full max-w-md">
+        <Link href="/" className="mb-8 flex items-center justify-center space-x-2">
+          <Briefcase className="h-10 w-10 text-blue-500" />
+          <span className="text-3xl font-bold text-white">Careera</span>
         </Link>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-            <p className="text-gray-600">Sign in to continue to your account</p>
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-8 shadow-2xl">
+          <div className="mb-8 text-center">
+            <h1 className="mb-2 text-2xl font-bold text-white">Welcome Back</h1>
+            <p className="text-zinc-400">Sign in to continue to your account</p>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-              {error}
-            </div>
-          )}
+          {error && <Alert variant="error" className="mb-6">{error}</Alert>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-zinc-300">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputCls}
                   placeholder="you@example.com"
                   required
                 />
@@ -81,37 +80,27 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-zinc-300">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={inputCls}
                   placeholder="Enter your password"
                   required
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700">
-                Forgot password?
-              </Link>
-            </div>
-
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex w-full items-center justify-center rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? (
                 <span>Signing in...</span>
@@ -125,23 +114,22 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              Don't have an account?{' '}
-              <Link href="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+            <p className="text-zinc-400">
+              Don&apos;t have an account?{' '}
+              <Link href="/register" className="font-medium text-emerald-400 hover:text-emerald-300">
                 Sign up
               </Link>
             </p>
           </div>
 
-          {/* Demo Accounts */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <p className="text-sm text-gray-600 text-center mb-4">Demo Accounts:</p>
-            <div className="space-y-2 text-xs text-gray-500">
-              <div className="bg-gray-50 p-2 rounded">
-                <strong>Job Seeker:</strong> seeker@example.com / password123
+          <div className="mt-8 border-t border-zinc-800 pt-6">
+            <p className="mb-4 text-center text-sm text-zinc-400">Demo Accounts:</p>
+            <div className="space-y-2 text-xs text-zinc-400">
+              <div className="rounded border border-zinc-800 bg-black p-2">
+                <strong className="text-blue-400">Job Seeker:</strong> seeker@example.com / password123
               </div>
-              <div className="bg-gray-50 p-2 rounded">
-                <strong>Recruiter:</strong> recruiter@example.com / password123
+              <div className="rounded border border-zinc-800 bg-black p-2">
+                <strong className="text-emerald-400">Recruiter:</strong> recruiter@example.com / password123
               </div>
             </div>
           </div>
