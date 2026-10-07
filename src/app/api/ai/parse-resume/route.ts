@@ -22,21 +22,18 @@ export async function POST(req: Request) {
 
     if (!parsedData) {
       return NextResponse.json(
-        { error: 'Failed to parse resume. Make sure the OpenAI API key is configured.' },
-        { status: 500 }
+        { error: 'Resume import is not available right now. Please fill in your profile manually.' },
+        { status: 503 }
       )
     }
 
     return NextResponse.json({ success: true, data: parsedData })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid input', details: error.errors },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 })
     }
 
     console.error('Resume parsing error:', error)
-    return NextResponse.json({ error: 'Failed to parse resume' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to read resume' }, { status: 500 })
   }
 }

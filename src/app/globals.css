@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background-color: #000;
-  color: #f4f4f5;
+  background-color: #fff;
+  color: #27272a;
 }
 
 ::selection {
-  background: #16a34a;
+  background: #dc2626;
   color: #fff;
 }
 
@@ -20,14 +20,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #09090b;
+  background-color: #fafafa;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #27272a;
+  background-color: #d4d4d8;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #2563eb;
+  background-color: #dc2626;
 }

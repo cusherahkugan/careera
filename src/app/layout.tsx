@@ -6,20 +6,16 @@ import { Providers } from '@/components/providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Careera - AI-Powered Job Recruitment Platform',
+  title: 'Careera - Find work that fits',
   description:
-    'Connect talented professionals with great opportunities using AI-powered matching and modern recruitment tools.',
-  keywords: ['jobs', 'recruitment', 'hiring', 'careers', 'AI matching'],
+    'A straightforward job board. Build one profile, apply in a click, and track every application in one place.',
+  keywords: ['jobs', 'recruitment', 'hiring', 'careers'],
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} bg-black text-zinc-100 antialiased`}>
+      <body className={`${inter.className} bg-white text-zinc-800 antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

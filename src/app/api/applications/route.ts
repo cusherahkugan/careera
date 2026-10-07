@@ -7,6 +7,15 @@ import { prisma } from '@/lib/prisma'
 import { calculateJobMatch } from '@/lib/ai'
 import { applicationSchema } from '@/lib/validations'
 
+const SCORING_TIMEOUT_MS = 6000
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
+  ])
+}
+
 // GET /api/applications - current user's applications
 export async function GET(req: Request) {
   try {
@@ -28,9 +37,7 @@ export async function GET(req: Request) {
     const applications = await prisma.application.findMany({
       where,
       include: {
-        job: {
-          include: { company: { select: { name: true, logo: true } } },
-        },
+        job: { include: { company: { select: { name: true, logo: true } } } },
       },
       orderBy: { createdAt: 'desc' },
     })
@@ -47,75 +54,73 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session?.user || session.user.role !== 'JOB_SEEKER') {
-      return NextResponse.json(
-        { error: 'Only job seekers can apply for jobs' },
-        { status: 401 }
-      )
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Please sign in to apply' }, { status: 401 })
+    }
+    if (session.user.role !== 'JOB_SEEKER') {
+      return NextResponse.json({ error: 'Only job seekers can apply for jobs' }, { status: 403 })
     }
 
     const data = applicationSchema.parse(await req.json())
 
-    const existingApplication = await prisma.application.findUnique({
-      where: {
-        jobId_applicantId: { jobId: data.jobId, applicantId: session.user.id },
-      },
-    })
-
-    if (existingApplication) {
-      return NextResponse.json({ error: 'Already applied to this job' }, { status: 400 })
-    }
-
-    const [job, profile] = await Promise.all([
+    const [existing, job, profile] = await Promise.all([
+      prisma.application.findUnique({
+        where: { jobId_applicantId: { jobId: data.jobId, applicantId: session.user.id } },
+      }),
       prisma.job.findUnique({ where: { id: data.jobId } }),
       prisma.profile.findUnique({ where: { userId: session.user.id } }),
     ])
 
+    if (existing) {
+      return NextResponse.json({ error: 'You already applied to this job' }, { status: 409 })
+    }
     if (!job) {
       return NextResponse.json({ error: 'Job not found' }, { status: 404 })
     }
-
     if (!job.isActive) {
-      return NextResponse.json({ error: 'This job is no longer active' }, { status: 400 })
+      return NextResponse.json({ error: 'This job is no longer open' }, { status: 400 })
     }
 
+    // Match scoring is a nice extra. It must never block or break applying.
     let aiScore: number | null = null
     let aiNotes: string | null = null
 
     if (profile) {
       try {
-        const match = await calculateJobMatch(
-          profile.skills,
-          profile.experience as unknown[],
-          job.skills,
-          job.requirements
+        const match = await withTimeout(
+          calculateJobMatch(profile.skills, profile.experience as unknown[], job.skills, job.requirements),
+          SCORING_TIMEOUT_MS
         )
         aiScore = match.score
         aiNotes = match.analysis
       } catch (error) {
-        console.error('AI matching error:', error)
+        console.error('Match scoring skipped:', error)
       }
     }
 
-    const application = await prisma.application.create({
-      data: {
-        jobId: data.jobId,
-        applicantId: session.user.id,
-        coverLetter: data.coverLetter,
-        resumeUrl: data.resumeUrl || profile?.resumeUrl,
-        aiScore,
-        aiNotes,
-      },
-      include: { job: { include: { company: true } } },
-    })
-
-    return NextResponse.json({ application }, { status: 201 })
+    try {
+      const application = await prisma.application.create({
+        data: {
+          jobId: data.jobId,
+          applicantId: session.user.id,
+          coverLetter: data.coverLetter,
+          resumeUrl: data.resumeUrl || profile?.resumeUrl || null,
+          aiScore,
+          aiNotes,
+        },
+        include: { job: { include: { company: true } } },
+      })
+      return NextResponse.json({ application }, { status: 201 })
+    } catch (error) {
+      // two clicks at once: the database unique key caught the second one
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        return NextResponse.json({ error: 'You already applied to this job' }, { status: 409 })
+      }
+      throw error
+    }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid input', details: error.errors },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 })
     }
 
     console.error('Application creation error:', error)

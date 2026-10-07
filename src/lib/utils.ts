@@ -7,11 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDate(date: Date | string): string {
   const d = new Date(date)
-  return d.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 export function formatRelativeTime(date: Date | string): string {
@@ -47,39 +43,39 @@ export function truncate(str: string, length: number): string {
 }
 
 export const jobTypeColors: Record<string, string> = {
-  FULL_TIME: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-  PART_TIME: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
-  CONTRACT: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
-  INTERNSHIP: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
-  REMOTE: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+  FULL_TIME: 'bg-red-50 text-red-700 border-red-200',
+  PART_TIME: 'bg-zinc-50 text-zinc-700 border-zinc-300',
+  CONTRACT: 'bg-zinc-50 text-zinc-700 border-zinc-300',
+  INTERNSHIP: 'bg-zinc-50 text-zinc-700 border-zinc-300',
+  REMOTE: 'bg-zinc-50 text-zinc-700 border-zinc-300',
 }
 
 export const applicationStatusColors: Record<string, string> = {
-  PENDING: 'bg-zinc-500/15 text-zinc-300 border-zinc-500/30',
-  REVIEWED: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
-  INTERVIEW: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
-  ACCEPTED: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-  REJECTED: 'bg-red-500/15 text-red-300 border-red-500/30',
+  PENDING: 'bg-zinc-50 text-zinc-600 border-zinc-300',
+  REVIEWED: 'bg-zinc-100 text-zinc-800 border-zinc-300',
+  INTERVIEW: 'bg-red-50 text-red-700 border-red-200',
+  ACCEPTED: 'bg-green-50 text-green-700 border-green-200',
+  REJECTED: 'bg-zinc-100 text-zinc-500 border-zinc-200',
 }
 
 export const applicationStatusLabels: Record<string, string> = {
-  PENDING: 'Pending Review',
-  REVIEWED: 'Under Review',
-  INTERVIEW: 'Interview Scheduled',
+  PENDING: 'Pending review',
+  REVIEWED: 'Under review',
+  INTERVIEW: 'Interview scheduled',
   ACCEPTED: 'Accepted',
-  REJECTED: 'Not Selected',
+  REJECTED: 'Not selected',
 }
 
 export function getMatchScoreColor(score: number): string {
-  if (score >= 80) return 'text-emerald-400'
-  if (score >= 60) return 'text-blue-400'
-  if (score >= 40) return 'text-yellow-400'
-  return 'text-red-400'
+  if (score >= 80) return 'text-red-700'
+  if (score >= 60) return 'text-red-600'
+  if (score >= 40) return 'text-zinc-700'
+  return 'text-zinc-400'
 }
 
 export function getMatchScoreLabel(score: number): string {
-  if (score >= 80) return 'Excellent Match'
-  if (score >= 60) return 'Good Match'
-  if (score >= 40) return 'Fair Match'
-  return 'Poor Match'
+  if (score >= 80) return 'Excellent match'
+  if (score >= 60) return 'Good match'
+  if (score >= 40) return 'Fair match'
+  return 'Weak match'
 }

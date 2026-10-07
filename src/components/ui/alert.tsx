@@ -5,16 +5,16 @@ type AlertProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 
 const styles = {
-  error: 'border-red-500/40 bg-red-500/10 text-red-300',
-  success: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300',
-  info: 'border-blue-500/40 bg-blue-500/10 text-blue-300',
+  error: 'border-red-200 bg-red-50 text-red-800',
+  success: 'border-green-200 bg-green-50 text-green-800',
+  info: 'border-zinc-200 bg-zinc-50 text-zinc-700',
 }
 
 export function Alert({ variant = 'info', className, ...props }: AlertProps) {
   return (
     <div
       role="alert"
-      className={cn('rounded-lg border px-4 py-3 text-sm', styles[variant], className)}
+      className={cn('rounded border px-4 py-3 text-sm', styles[variant], className)}
       {...props}
     />
   )

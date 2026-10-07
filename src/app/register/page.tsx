@@ -3,12 +3,12 @@
 import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Briefcase, Mail, Lock, User, Building, ArrowRight } from 'lucide-react'
 import axios from 'axios'
 import { Alert } from '@/components/ui/alert'
 
 const inputCls =
-  'w-full rounded-lg border border-zinc-800 bg-black py-3 pl-10 pr-4 text-white placeholder-zinc-600 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500'
+  'w-full rounded border border-zinc-300 bg-white px-3 py-2.5 text-zinc-900 placeholder-zinc-400 focus:border-red-600 focus:outline-none focus:ring-1 focus:ring-red-600'
+const labelCls = 'mb-1.5 block text-sm font-medium text-zinc-700'
 
 function RegisterForm() {
   const router = useRouter()
@@ -38,12 +38,10 @@ function RegisterForm() {
       setError('Passwords do not match')
       return
     }
-
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters')
       return
     }
-
     if (formData.role === 'RECRUITER' && !formData.companyName) {
       setError('Company name is required for recruiters')
       return
@@ -59,7 +57,6 @@ function RegisterForm() {
         role: formData.role,
         companyName: formData.companyName || undefined,
       })
-
       router.push('/login')
     } catch (err) {
       setError(
@@ -72,39 +69,38 @@ function RegisterForm() {
   }
 
   const roleBtn = (active: boolean) =>
-    `rounded-lg border-2 p-3 text-sm font-medium transition ${
+    `rounded border py-2.5 text-sm font-medium transition ${
       active
-        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300'
-        : 'border-zinc-800 text-zinc-400 hover:border-zinc-600'
+        ? 'border-red-600 bg-red-50 text-red-700'
+        : 'border-zinc-300 text-zinc-600 hover:border-zinc-400'
     }`
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black p-4">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-[36rem] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
-      <div className="relative w-full max-w-md">
-        <Link href="/" className="mb-8 flex items-center justify-center space-x-2">
-          <Briefcase className="h-10 w-10 text-blue-500" />
-          <span className="text-3xl font-bold text-white">Careera</span>
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 p-4">
+      <div className="w-full max-w-sm">
+        <Link
+          href="/"
+          className="mb-8 block text-center font-serif text-3xl font-bold tracking-tight text-zinc-900"
+        >
+          Careera<span className="text-red-600">.</span>
         </Link>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-8 shadow-2xl">
-          <div className="mb-8 text-center">
-            <h1 className="mb-2 text-2xl font-bold text-white">Create Account</h1>
-            <p className="text-zinc-400">Join thousands of professionals</p>
-          </div>
+        <div className="rounded border border-zinc-200 bg-white p-8 shadow-sm">
+          <h1 className="font-serif text-2xl font-bold text-zinc-900">Create your account</h1>
+          <p className="mb-6 mt-1 text-sm text-zinc-500">It takes about a minute.</p>
 
-          {error && <Alert variant="error" className="mb-6">{error}</Alert>}
+          {error && <Alert variant="error" className="mb-5">{error}</Alert>}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-300">I am a</label>
+              <span className={labelCls}>I am a</span>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setFormData((p) => ({ ...p, role: 'JOB_SEEKER' }))}
                   className={roleBtn(formData.role === 'JOB_SEEKER')}
                 >
-                  Job Seeker
+                  Job seeker
                 </button>
                 <button
                   type="button"
@@ -117,126 +113,52 @@ function RegisterForm() {
             </div>
 
             <div>
-              <label htmlFor="name" className="mb-2 block text-sm font-medium text-zinc-300">
-                Full Name
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={inputCls}
-                  placeholder="John Doe"
-                  required
-                />
-              </div>
+              <label htmlFor="name" className={labelCls}>Full name</label>
+              <input id="name" name="name" value={formData.name} onChange={handleChange}
+                className={inputCls} placeholder="Jane Doe" required />
             </div>
 
             <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium text-zinc-300">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={inputCls}
-                  placeholder="you@example.com"
-                  required
-                />
-              </div>
+              <label htmlFor="email" className={labelCls}>Email address</label>
+              <input id="email" name="email" type="email" value={formData.email}
+                onChange={handleChange} className={inputCls} placeholder="you@example.com" required />
             </div>
 
             {formData.role === 'RECRUITER' && (
               <div>
-                <label htmlFor="companyName" className="mb-2 block text-sm font-medium text-zinc-300">
-                  Company Name
-                </label>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
-                  <input
-                    id="companyName"
-                    name="companyName"
-                    type="text"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    className={inputCls}
-                    placeholder="Your Company"
-                    required
-                  />
-                </div>
+                <label htmlFor="companyName" className={labelCls}>Company name</label>
+                <input id="companyName" name="companyName" value={formData.companyName}
+                  onChange={handleChange} className={inputCls} required />
               </div>
             )}
 
             <div>
-              <label htmlFor="password" className="mb-2 block text-sm font-medium text-zinc-300">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={inputCls}
-                  placeholder="Minimum 6 characters"
-                  required
-                />
-              </div>
+              <label htmlFor="password" className={labelCls}>Password</label>
+              <input id="password" name="password" type="password" value={formData.password}
+                onChange={handleChange} className={inputCls} placeholder="At least 6 characters" required />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-zinc-300">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={inputCls}
-                  placeholder="Confirm your password"
-                  required
-                />
-              </div>
+              <label htmlFor="confirmPassword" className={labelCls}>Confirm password</label>
+              <input id="confirmPassword" name="confirmPassword" type="password"
+                value={formData.confirmPassword} onChange={handleChange} className={inputCls} required />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-500 disabled:opacity-50"
+              className="w-full rounded bg-red-600 py-2.5 font-medium text-white hover:bg-red-700 disabled:opacity-50"
             >
-              {loading ? (
-                <span>Creating account...</span>
-              ) : (
-                <>
-                  Create Account
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </>
-              )}
+              {loading ? 'Creating account…' : 'Create account'}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-zinc-400">
-              Already have an account?{' '}
-              <Link href="/login" className="font-medium text-emerald-400 hover:text-emerald-300">
-                Sign in
-              </Link>
-            </p>
-          </div>
+          <p className="mt-6 text-center text-sm text-zinc-500">
+            Already have an account?{' '}
+            <Link href="/login" className="font-medium text-red-600 hover:text-red-700">
+              Sign in
+            </Link>
+          </p>
         </div>
       </div>
     </div>
@@ -245,7 +167,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-screen bg-zinc-50" />}>
       <RegisterForm />
     </Suspense>
   )
